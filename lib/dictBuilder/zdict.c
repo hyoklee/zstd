@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020, Yann Collet, Facebook, Inc.
+ * Copyright (c) 2016-2021, Yann Collet, Facebook, Inc.
  * All rights reserved.
  *
  * This source code is licensed under both the BSD-style license (found in the
@@ -23,9 +23,13 @@
 /* Unix Large Files support (>4GB) */
 #define _FILE_OFFSET_BITS 64
 #if (defined(__sun__) && (!defined(__LP64__)))   /* Sun Solaris 32-bits requires specific definitions */
+#  ifndef _LARGEFILE_SOURCE
 #  define _LARGEFILE_SOURCE
+#  endif
 #elif ! defined(__LP64__)                        /* No point defining Large file for 64 bit */
+#  ifndef _LARGEFILE64_SOURCE
 #  define _LARGEFILE64_SOURCE
+#  endif
 #endif
 
 

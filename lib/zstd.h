@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2020, Yann Collet, Facebook, Inc.
+ * Copyright (c) 2016-2021, Yann Collet, Facebook, Inc.
  * All rights reserved.
  *
  * This source code is licensed under both the BSD-style license (found in the
@@ -72,7 +72,7 @@ extern "C" {
 /*------   Version   ------*/
 #define ZSTD_VERSION_MAJOR    1
 #define ZSTD_VERSION_MINOR    4
-#define ZSTD_VERSION_RELEASE  7
+#define ZSTD_VERSION_RELEASE  8
 #define ZSTD_VERSION_NUMBER  (ZSTD_VERSION_MAJOR *100*100 + ZSTD_VERSION_MINOR *100 + ZSTD_VERSION_RELEASE)
 
 /*! ZSTD_versionNumber() :
@@ -1370,6 +1370,23 @@ ZSTDLIB_API size_t ZSTD_mergeBlockDelimiters(ZSTD_Sequence* sequences, size_t se
 ZSTDLIB_API size_t ZSTD_compressSequences(ZSTD_CCtx* const cctx, void* dst, size_t dstSize,
                                   const ZSTD_Sequence* inSeqs, size_t inSeqsSize,
                                   const void* src, size_t srcSize);
+
+
+/*! ZSTD_writeSkippableFrame() :
+ * Generates a zstd skippable frame containing data given by src, and writes it to dst buffer.
+ * 
+ * Skippable frames begin with a a 4-byte magic number. There are 16 possible choices of magic number,
+ * ranging from ZSTD_MAGIC_SKIPPABLE_START to ZSTD_MAGIC_SKIPPABLE_START+15.
+ * As such, the parameter magicVariant controls the exact skippable frame magic number variant used, so
+ * the magic number used will be ZSTD_MAGIC_SKIPPABLE_START + magicVariant.
+ * 
+ * Returns an error if destination buffer is not large enough, if the source size is not representable
+ * with a 4-byte unsigned int, or if the parameter magicVariant is greater than 15 (and therefore invalid).
+ * 
+ * @return : number of bytes written or a ZSTD error.
+ */
+ZSTDLIB_API size_t ZSTD_writeSkippableFrame(void* dst, size_t dstCapacity,
+                                            const void* src, size_t srcSize, unsigned magicVariant);
 
 
 /***************************************
